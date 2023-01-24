@@ -131,19 +131,19 @@ test('DataWell.top will return last added element if sorted is false', () => {
 test('DataWell will throw an error if it is to be sorted and the attribute to be sorted on does not exist', () => {
     expect(() => {
         sut.push([{sample: 1, not_a_timestamp: 1}]);
-    }).toThrow('Supplied data in element 0 does not contain the attribute you defined to sort on.');
+    }).toThrow('Supplied data in element 0 does not contain the attribute timestamp, which you defined to sort on.');
 })
 
 test('DataWell will throw an error if it is to be sorted and the attribute to be sorted on is not a of type number', () => {
     expect(() => {
         sut.push([{sample: 1, timestamp: '1'}]);
-    }).toThrow('Supplied data attribute to sort on in element 0 is not a number.');
+    }).toThrow('Supplied data attribute timestamp to sort on in element 0 is not a number.');
     data = [
         {sample: 0, timestamp: 0},
         {sample: 1, timestamp: true}
     ];
     expect(() => {
         sut.push(data);
-    }).toThrow('Supplied data attribute to sort on in element 1 is not a number.');
+    }).toThrow('Supplied data attribute timestamp to sort on in element 1 is not a number.');
 })
 

@@ -28,11 +28,11 @@ class DataWell {
             // check if sortOnAttribute is present
             if (this.#sorted) {
                 if (!Object.hasOwn(element, this.#sortOnAttribute)) {
-                    throw new Error(`Supplied data in element ${ index } does not contain the attribute you defined to sort on.`);
+                    throw new Error(`Supplied data in element ${ index } does not contain the attribute ${ this.#sortOnAttribute }, which you defined to sort on.`);
                 }
                 if (Object.hasOwn(element, this.#sortOnAttribute) &&
                     typeof element[this.#sortOnAttribute] !== "number") {
-                    throw new Error(`Supplied data attribute to sort on in element ${ index } is not a number.`);
+                    throw new Error(`Supplied data attribute ${ this.#sortOnAttribute } to sort on in element ${ index } is not a number.`);
                 }
             }
             // push only if id is not already present
