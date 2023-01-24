@@ -1,0 +1,20 @@
+{
+  "name": "datawell",
+  "version": "0.9.0",
+  "description": "javascript data stack",
+  "main": "datawell.js",
+  "scripts": {
+    "test": "jest",
+    "coverage": "jest --coverage"
+  },
+  "keywords": [
+    "datawell",
+    "javscript",
+    "stack"
+  ],
+  "author": "donnerluetjen",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.3.1"
+  }
+}
