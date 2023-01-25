@@ -166,8 +166,10 @@ test('Sorted DataWell will merge new data with old data when processing data wit
 test('Sorted DataWell will keep newer data on merge with old data when processing data with same sortOnAttribute', () => {
     sut.push(maxData());
     expect(sut.top()).toEqual({sample: CAPACITY - 1, timestamp: CAPACITY - 1});
-    sut.push([{timestamp: CAPACITY - 1, otherData: CAPACITY - 1}]);
-    expect(sut.top()).toEqual({sample: CAPACITY - 1, timestamp: CAPACITY - 1, otherData: CAPACITY - 1});
+    sut.push([{sample: CAPACITY, timestamp: CAPACITY, data: CAPACITY}]);
+    expect(sut.top()).toEqual({sample: CAPACITY, timestamp: CAPACITY, data: CAPACITY});
+    sut.push([{timestamp: CAPACITY, data: CAPACITY + 1, otherData: CAPACITY + 1}]);
+    expect(sut.top()).toEqual({sample: CAPACITY, timestamp: CAPACITY, data: CAPACITY + 1, otherData: CAPACITY + 1});
 })
 
 /*
