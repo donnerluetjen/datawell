@@ -42,7 +42,8 @@ class DataWell {
 
             if (this.#sorted && element_id !== notFound) {
                 // update found element
-                this.#data[element_id] = element;
+                const merged = {...this.#data[element_id], ...element};
+                this.#data[element_id] = merged;
             } else {
                 this.#data.push(element);
             }
