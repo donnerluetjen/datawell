@@ -36,7 +36,7 @@ test("DataWell capacity upon creation returns the capacity", () => {
 })
 
 test("DataWell capacity after push returns the capacity", () => {
-    sut.push([{sample: 0, timestamp: 0}]);
+    sut.push({sample: 0, timestamp: 0});
     expect(sut.capacity()).toBe(CAPACITY);
     sut.push(maxData());
     expect(sut.capacity()).toBe(CAPACITY);
@@ -47,7 +47,7 @@ test('DataWell.isEmpty returns true if empty', () => {
 })
 
 test('DataWell.isEmpty returns false if not empty', () => {
-    sut.push([{data: 1, timestamp: 1}]);
+    sut.push({data: 1, timestamp: 1});
     expect(sut.isEmpty()).toBeFalsy();
     sut.push(maxData());
     expect(sut.isEmpty()).toBeFalsy();
@@ -63,7 +63,7 @@ test('DataWell.isFull returns false if empty', () => {
 })
 
 test('DataWell.isFull returns false if not empty and not full', () => {
-    sut.push([{data: 1, timestamp: 1}]);
+    sut.push({data: 1, timestamp: 1});
     expect(sut.isFull()).toBeFalsy();
 })
 
@@ -76,8 +76,24 @@ test('DataWell.isFull returns true if full', () => {
  *** Test Push Function ***
  */
 
+test('DataWell.push will accept a single object', () => {
+    expect(() => {
+        sut.push({sample: 0, timestamp: 0});
+    }).not.toThrow();
+});
+test('DataWell.push will accept a list with a single object', () => {
+    expect(() => {
+        sut.push([{sample: 0, timestamp: 0}]);
+    }).not.toThrow();
+});
+test('DataWell.push will accept a list of objects', () => {
+    expect(() => {
+        sut.push(maxData());
+    }).not.toThrow();
+});
+
 test('Sorted DataWell to contain one item when one item was pushed', () => {
-    sut.push([{data: 1, timestamp: 1}]);
+    sut.push({data: 1, timestamp: 1});
     expect(sut.count()).toBe(1);
 });
 
@@ -88,20 +104,20 @@ test('Sorted DataWell to accept a list of items for push', () => {
 
 test('DataWell will only hold CAPACITY elements', () => {
     sut.push(maxData());
-    sut.push([{sample: CAPACITY + 1, timestamp: CAPACITY + 1}]);
+    sut.push({sample: CAPACITY + 1, timestamp: CAPACITY + 1});
     expect(sut.count()).toBe(CAPACITY);
 })
 
 test('Sorted DataWell will only hold highest CAPACITY elements pushed', () => {
-    sut.push([{sample: CAPACITY + 1, timestamp: CAPACITY + 1}]);
+    sut.push({sample: CAPACITY + 1, timestamp: CAPACITY + 1});
     sut.push(maxData());
     expect(sut.top()[SORT_ON_ATTRIBUTE]).toBe(CAPACITY - 1);
 })
 
 test('Sorted DataWell will position higher id to top of stack', () => {
-    sut.push([{sample: 8, timestamp: 8}]);
+    sut.push({sample: 8, timestamp: 8});
     for (let i = 0; i < 8; i++) {
-        sut.push([{sample: i, timestamp: i}]);
+        sut.push({sample: i, timestamp: i});
     }
     expect(sut.count()).toBe(9);
     expect(sut.top()).toEqual({sample: 8, timestamp: 8});
@@ -109,9 +125,9 @@ test('Sorted DataWell will position higher id to top of stack', () => {
 
 test('Sorted DataWell will override data with same timestamp', () => {
     for (let i = 0; i < 9; i++) {
-        sut.push([{sample: i, timestamp: i}]);
+        sut.push({sample: i, timestamp: i});
     }
-    sut.push([{sample: 8.1, timestamp: 8}]);
+    sut.push({sample: 8.1, timestamp: 8});
     expect(sut.count()).toBe(9);
     expect(sut.top()).toEqual({sample: 8.1, timestamp: 8});
 })
@@ -119,26 +135,26 @@ test('Sorted DataWell will override data with same timestamp', () => {
 test('Unsorted DataWell will push data with same timestamp to top', () => {
     let noSortSut = new DataWell(CAPACITY, false, 'timestamp');
     noSortSut.push(maxData());
-    noSortSut.push([{sample: 0, timestamp: 0}]);
+    noSortSut.push({sample: 0, timestamp: 0});
     expect(noSortSut.top()).toEqual({sample: 0, timestamp: 0});
 })
 
 test('Sorted DataWell will throw an error if the attribute to be sorted on does not exist', () => {
     expect(() => {
-        sut.push([{sample: 1, not_a_timestamp: 1}]);
+        sut.push({sample: 1, not_a_timestamp: 1});
     }).toThrow('Supplied data in element 0 does not contain the attribute timestamp, which you defined to sort on.');
 })
 
 test('Unsorted DataWell does not throw an error if the attribute to be sorted on does not exist', () => {
     let noSortSut = new DataWell(CAPACITY, false, 'timestamp');
     expect(() => {
-        noSortSut.push([{sample: 1, id: 1}]);
+        noSortSut.push({sample: 1, id: 1});
     }).not.toThrow('Supplied data in element 0 does not contain the attribute timestamp, which you defined to sort on.');
 })
 
 test('Sorted DataWell will throw an error if the attribute to be sorted on is not a of type number', () => {
     expect(() => {
-        sut.push([{sample: 1, timestamp: '1'}]);
+        sut.push({sample: 1, timestamp: '1'});
     }).toThrow('Supplied data attribute timestamp to sort on in element 0 is not a number.');
     data = [
         {sample: 0, timestamp: 0},
@@ -152,23 +168,23 @@ test('Sorted DataWell will throw an error if the attribute to be sorted on is no
 test('Unsorted DataWell does not throw an error if the attribute to be sorted on is not a of type number', () => {
     let noSortSut = new DataWell(CAPACITY, false, 'timestamp');
     expect(() => {
-        noSortSut.push([{sample: 1, timestamp: '1'}]);
+        noSortSut.push({sample: 1, timestamp: '1'});
     }).not.toThrow('Supplied data attribute timestamp to sort on in element 0 is not a number.');
 })
 
 test('Sorted DataWell will merge new data with old data when processing data with same sortOnAttribute', () => {
     sut.push(maxData());
     expect(sut.top()).toEqual({sample: CAPACITY - 1, timestamp: CAPACITY - 1});
-    sut.push([{sample: CAPACITY - 1, timestamp: CAPACITY - 1, otherData: CAPACITY - 1}]);
+    sut.push({sample: CAPACITY - 1, timestamp: CAPACITY - 1, otherData: CAPACITY - 1});
     expect(sut.top()).toEqual({sample: CAPACITY - 1, timestamp: CAPACITY - 1, otherData: CAPACITY - 1});
 })
 
 test('Sorted DataWell will keep newer data on merge with old data when processing data with same sortOnAttribute', () => {
     sut.push(maxData());
     expect(sut.top()).toEqual({sample: CAPACITY - 1, timestamp: CAPACITY - 1});
-    sut.push([{sample: CAPACITY, timestamp: CAPACITY, data: CAPACITY}]);
+    sut.push({sample: CAPACITY, timestamp: CAPACITY, data: CAPACITY});
     expect(sut.top()).toEqual({sample: CAPACITY, timestamp: CAPACITY, data: CAPACITY});
-    sut.push([{timestamp: CAPACITY, data: CAPACITY + 1, otherData: CAPACITY + 1}]);
+    sut.push({timestamp: CAPACITY, data: CAPACITY + 1, otherData: CAPACITY + 1});
     expect(sut.top()).toEqual({sample: CAPACITY, timestamp: CAPACITY, data: CAPACITY + 1, otherData: CAPACITY + 1});
 })
 
@@ -187,7 +203,7 @@ test('DataWell.top will return top element and keep it on stack', () => {
 test('Unsorted DataWell.top will return last added element', () => {
     let noSortSut = new DataWell(CAPACITY);
     noSortSut.push(maxData());
-    noSortSut.push([{sample: 4.1, timestamp: 4}]);
+    noSortSut.push({sample: 4.1, timestamp: 4});
     expect(noSortSut.count()).toBe(CAPACITY);
     expect(noSortSut.top()).toEqual({sample: 4.1, timestamp: 4});
     noSortSut = null;

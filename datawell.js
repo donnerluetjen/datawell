@@ -21,12 +21,11 @@ class DataWell {
     }
 
     push(data) {
-        // expects array of <data>
         // if the DataWell would hold more than capacity after push, the oldest entry will be dropped
         // if data[n].id is already contained, than data[n] will be updated
-        data.forEach((element, index) => {
-            // check if sortOnAttribute is present
+        const pushSingleObject = (element, index = 0) => {
             if (this.#sorted) {
+                // check if sortOnAttribute is present
                 if (!Object.hasOwn(element, this.#sortOnAttribute)) {
                     throw new Error(`Supplied data in element ${ index } does not contain the attribute ${ this.#sortOnAttribute }, which you defined to sort on.`);
                 }
@@ -47,7 +46,16 @@ class DataWell {
             } else {
                 this.#data.push(element);
             }
-        });
+        };
+
+        if (Array.isArray(data)) {
+            data.forEach((element, index) => {
+                pushSingleObject(element, index);
+            });
+        } else {
+            pushSingleObject(data);
+        }
+
         // restrict to maxLength items by removing the oldest
         while (this.#data.length > this.#capacity) {
             this.#data.shift();
