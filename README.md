@@ -32,7 +32,7 @@ Creates and maintains a stack of data to refer to.
 const dataWell = new DataWell(4);
 
 for (let i=0; i < 4; i++) {
-  dataWell.push({sample: i};
+  dataWell.push({sample: i});
 }
   
 dataWell.push([{sample: -4}]);
