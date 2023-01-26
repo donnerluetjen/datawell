@@ -12,12 +12,18 @@ class DataWell {
     #data = [];
     #capacity;
     #sorted = false;
-    #sortOnAttribute = "";
+    #sortOnProperty = "";
 
-    constructor(capacity, sorted = false, sortOnAttribute = "id") {
+    constructor(capacity, sorted = false, sortOnProperty = "id") {
+        if (!(Number.isInteger(capacity)) || capacity <= 0) {
+            throw new Error('You must supply the capacity as a positive integer value');
+        }
+        if (!(typeof sorted == "boolean")) {
+            throw new Error('You must supply the sorted argument as a boolean value');
+        }
         this.#capacity = capacity;
         this.#sorted = sorted;
-        this.#sortOnAttribute = sortOnAttribute;
+        this.#sortOnProperty = sortOnProperty;
     }
 
     push(data) {
@@ -25,19 +31,19 @@ class DataWell {
         // if data[n].id is already contained, than data[n] will be updated
         const pushSingleObject = (element, index = 0) => {
             if (this.#sorted) {
-                // check if sortOnAttribute is present
-                if (!Object.hasOwn(element, this.#sortOnAttribute)) {
-                    throw new Error(`Supplied data in element ${ index } does not contain the attribute ${ this.#sortOnAttribute }, which you defined to sort on.`);
+                // check if sortOnProperty is present
+                if (!Object.hasOwn(element, this.#sortOnProperty)) {
+                    throw new Error(`Supplied data in element ${ index } does not contain the property ${ this.#sortOnProperty }, which you defined to sort on.`);
                 }
-                if (Object.hasOwn(element, this.#sortOnAttribute) &&
-                    typeof element[this.#sortOnAttribute] !== "number") {
-                    throw new Error(`Supplied data attribute ${ this.#sortOnAttribute } to sort on in element ${ index } is not a number.`);
+                if (Object.hasOwn(element, this.#sortOnProperty) &&
+                    typeof element[this.#sortOnProperty] !== "number") {
+                    throw new Error(`Supplied data property ${ this.#sortOnProperty } to sort on in element ${ index } is not a number.`);
                 }
             }
             // push only if id is not already present
             const notFound = -1;
-            const id = element[this.#sortOnAttribute];
-            const element_id = this.#data.findIndex((e => e[this.#sortOnAttribute] === id));
+            const id = element[this.#sortOnProperty];
+            const element_id = this.#data.findIndex((e => e[this.#sortOnProperty] === id));
 
             if (this.#sorted && element_id !== notFound) {
                 // update found element
@@ -62,9 +68,9 @@ class DataWell {
         }
         if (this.#sorted) {
             this.#data.sort((a, b) => {
-                if (a[this.#sortOnAttribute] < b[this.#sortOnAttribute]) return -1;
-                if (a[this.#sortOnAttribute] > b[this.#sortOnAttribute]) return 1;
-                if (a[this.#sortOnAttribute] === b[this.#sortOnAttribute]) return 0;
+                if (a[this.#sortOnProperty] < b[this.#sortOnProperty]) return -1;
+                if (a[this.#sortOnProperty] > b[this.#sortOnProperty]) return 1;
+                if (a[this.#sortOnProperty] === b[this.#sortOnProperty]) return 0;
             });
         }
     };
