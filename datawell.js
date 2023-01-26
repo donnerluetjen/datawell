@@ -1,13 +1,3 @@
-/*
-The DataWell class implements a stack. It has a capacity that cannot be exceeded.
-Should a push result in exceeding the capacity, the oldest element will be dropped.
-The DataWell cannot be empty, nor can you remove an element. You can only read the top element or
-the whole contents of the DataWell.
-The DataWell class expects the following structure {<data>}.
-Optionally the array can be kept sorted ascending, default is push order. If the array should be kept sorted,
-a sortOnAttribute can be passed, default is <id>, to tell the DataWell which attribute to sort on.
-The attribute to sort on must be of type number.
- */
 class DataWell {
     #data = [];
     #capacity;

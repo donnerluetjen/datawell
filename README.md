@@ -1,6 +1,6 @@
 # DataWell
 
-Creates and maintaines a stack of data to refer to.
+Creates and maintains a stack of data to refer to.
 
 ## Requirements and Feature
 
