@@ -8,8 +8,11 @@ class DataWell {
         if (!(Number.isInteger(capacity)) || capacity <= 0) {
             throw new Error('You must supply the capacity as a positive integer value');
         }
-        if (!(typeof sorted == "boolean")) {
+        if (!(typeof sorted === "boolean")) {
             throw new Error('You must supply the sorted argument as a boolean value');
+        }
+        if (!(typeof sortOnProperty === "string")) {
+            throw new Error('You must supply the sortOnProperty argument as a string value');
         }
         this.#capacity = capacity;
         this.#sorted = sorted;
@@ -52,16 +55,17 @@ class DataWell {
             pushSingleObject(data);
         }
 
-        // restrict to maxLength items by removing the oldest
-        while (this.#data.length > this.#capacity) {
-            this.#data.shift();
-        }
         if (this.#sorted) {
             this.#data.sort((a, b) => {
                 if (a[this.#sortOnProperty] < b[this.#sortOnProperty]) return -1;
                 if (a[this.#sortOnProperty] > b[this.#sortOnProperty]) return 1;
                 if (a[this.#sortOnProperty] === b[this.#sortOnProperty]) return 0;
             });
+        }
+
+        // restrict to maxLength items by removing the oldest
+        while (this.#data.length > this.#capacity) {
+            this.#data.shift();
         }
     };
 
