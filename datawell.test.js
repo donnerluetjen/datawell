@@ -18,11 +18,21 @@ afterEach(() => {
 const maxData = () => {
     let data = [];
     for (let i = 0; i < CAPACITY; i++) {
-        data.push({sample: i, timestamp: i});
+        const element = new Object;
+        element.sample = i;
+        element[SORT_ON_PROPERTY] = i;
+
+        data.push(element);
     }
     return data;
 }
 
+const singleData = (id, reference = id) => {
+    const element = new Object;
+    element.sample = reference;
+    element[SORT_ON_PROPERTY] = id;
+    return element;
+}
 /*
  *** Test Initialization ***
  */
@@ -90,6 +100,26 @@ test('DataWell throws error when supplied sorted argument is not a boolean', () 
     initSut = null;
 })
 
+test('DataWell throws error when supplied sortOnProperty argument is not a string', () => {
+    let initSut;
+    expect(() => {
+        initSut = new DataWell(10, true, 10);
+    }).toThrow('You must supply the sortOnProperty argument as a string value');
+    initSut = null;
+    expect(() => {
+        initSut = new DataWell(10, true, -10.1);
+    }).toThrow('You must supply the sortOnProperty argument as a string value');
+    initSut = null;
+    expect(() => {
+        initSut = new DataWell(10, true, true);
+    }).toThrow('You must supply the sortOnProperty argument as a string value');
+    initSut = null;
+    expect(() => {
+        initSut = new DataWell(10,true, false);
+    }).toThrow('You must supply the sortOnProperty argument as a string value');
+    initSut = null;
+})
+
 /*
  *** Test of Status Functions ***
  */
@@ -103,7 +133,7 @@ test("DataWell capacity upon creation returns the capacity", () => {
 })
 
 test("DataWell capacity after push returns the capacity", () => {
-    sut.push({sample: 0, timestamp: 0});
+    sut.push(singleData(0));
     expect(sut.capacity()).toBe(CAPACITY);
     sut.push(maxData());
     expect(sut.capacity()).toBe(CAPACITY);
@@ -114,7 +144,7 @@ test('DataWell.isEmpty returns true if empty', () => {
 })
 
 test('DataWell.isEmpty returns false if not empty', () => {
-    sut.push({data: 1, timestamp: 1});
+    sut.push(singleData(1));
     expect(sut.isEmpty()).toBeFalsy();
     sut.push(maxData());
     expect(sut.isEmpty()).toBeFalsy();
@@ -130,7 +160,7 @@ test('DataWell.isFull returns false if empty', () => {
 })
 
 test('DataWell.isFull returns false if not empty and not full', () => {
-    sut.push({data: 1, timestamp: 1});
+    sut.push(singleData(1));
     expect(sut.isFull()).toBeFalsy();
 })
 
@@ -145,12 +175,12 @@ test('DataWell.isFull returns true if full', () => {
 
 test('DataWell.push will accept a single object', () => {
     expect(() => {
-        sut.push({sample: 0, timestamp: 0});
+        sut.push(singleData(0));;
     }).not.toThrow();
 });
 test('DataWell.push will accept a list with a single object', () => {
     expect(() => {
-        sut.push([{sample: 0, timestamp: 0}]);
+        sut.push([singleData(1)]);;
     }).not.toThrow();
 });
 test('DataWell.push will accept a list of objects', () => {
@@ -160,7 +190,7 @@ test('DataWell.push will accept a list of objects', () => {
 });
 
 test('Sorted DataWell to contain one item when one item was pushed', () => {
-    sut.push({data: 1, timestamp: 1});
+    sut.push(singleData(1));
     expect(sut.count()).toBe(1);
 });
 
@@ -171,88 +201,110 @@ test('Sorted DataWell to accept a list of items for push', () => {
 
 test('DataWell will only hold CAPACITY elements', () => {
     sut.push(maxData());
-    sut.push({sample: CAPACITY + 1, timestamp: CAPACITY + 1});
+    sut.push(singleData(CAPACITY + 1));
     expect(sut.count()).toBe(CAPACITY);
-})
+});
 
 test('Sorted DataWell will only hold highest CAPACITY elements pushed', () => {
-    sut.push({sample: CAPACITY + 1, timestamp: CAPACITY + 1});
+    sut.push(singleData(CAPACITY + 1));
     sut.push(maxData());
-    expect(sut.top()[SORT_ON_PROPERTY]).toBe(CAPACITY - 1);
-})
+    expect(sut.top()[SORT_ON_PROPERTY]).toBe(CAPACITY + 1);
+});
 
 test('Sorted DataWell will position higher id to top of stack', () => {
-    sut.push({sample: 8, timestamp: 8});
+    const sampleData = singleData(8);
+    sut.push(sampleData);
     for (let i = 0; i < 8; i++) {
-        sut.push({sample: i, timestamp: i});
+        sut.push(singleData(i));
     }
     expect(sut.count()).toBe(9);
-    expect(sut.top()).toEqual({sample: 8, timestamp: 8});
+
+    expect(sut.top()).toEqual(sampleData);
 })
 
-test('Sorted DataWell will override data with same timestamp', () => {
+test('Sorted DataWell will override data with same SORT_ON_PROPERTY', () => {
     for (let i = 0; i < 9; i++) {
-        sut.push({sample: i, timestamp: i});
+        sut.push(singleData(i));
     }
-    sut.push({sample: 8.1, timestamp: 8});
+    let variedData = singleData(8, 8.1);
+    sut.push(variedData);
     expect(sut.count()).toBe(9);
-    expect(sut.top()).toEqual({sample: 8.1, timestamp: 8});
+
+    expect(sut.top()).toEqual(variedData);
 })
 
-test('Unsorted DataWell will push data with same timestamp to top', () => {
-    let noSortSut = new DataWell(CAPACITY, false, 'timestamp');
+test('Unsorted DataWell will push data with same SORT_ON_PROPERTY to top', () => {
+    let noSortSut = new DataWell(CAPACITY, false, SORT_ON_PROPERTY);
     noSortSut.push(maxData());
-    noSortSut.push({sample: 0, timestamp: 0});
-    expect(noSortSut.top()).toEqual({sample: 0, timestamp: 0});
+    const unsortedData = singleData(0);
+    noSortSut.push(unsortedData);
+
+    expect(noSortSut.top()).toEqual(unsortedData);
 })
 
 test('Sorted DataWell will throw an error if the property to be sorted on does not exist', () => {
+    const invalidPropertyData = new Object;
+    invalidPropertyData.sample = 1;
+    invalidPropertyData['not_a_' + SORT_ON_PROPERTY] = 1;
     expect(() => {
-        sut.push({sample: 1, not_a_timestamp: 1});
-    }).toThrow('Supplied data in element 0 does not contain the property timestamp, which you defined to sort on.');
+        sut.push(invalidPropertyData);
+    }).toThrow(`Supplied data in element 0 does not contain the property ${ SORT_ON_PROPERTY }, which you defined to sort on.`);
 })
 
 test('Unsorted DataWell does not throw an error if the property to be sorted on does not exist', () => {
-    let noSortSut = new DataWell(CAPACITY, false, 'timestamp');
+    let noSortSut = new DataWell(CAPACITY, false, SORT_ON_PROPERTY);
+    const invalidPropertyData = new Object;
+    invalidPropertyData.sample = 1;
+    invalidPropertyData['not_a_' + SORT_ON_PROPERTY] = 1;
     expect(() => {
-        noSortSut.push({sample: 1, id: 1});
-    }).not.toThrow('Supplied data in element 0 does not contain the property timestamp, which you defined to sort on.');
+        noSortSut.push(invalidPropertyData);
+    }).not.toThrow();
 })
 
 test('Sorted DataWell will throw an error if the property to be sorted on is not a of type number', () => {
+    let invalidPropertyData = singleData('1', 1);
     expect(() => {
-        sut.push({sample: 1, timestamp: '1'});
-    }).toThrow('Supplied data property timestamp to sort on in element 0 is not a number.');
+        sut.push(invalidPropertyData);
+    }).toThrow(`Supplied data property ${ SORT_ON_PROPERTY } to sort on in element 0 is not a number.`);
+    invalidPropertyData = singleData(true, 1);
     data = [
-        {sample: 0, timestamp: 0},
-        {sample: 1, timestamp: true}
+        singleData(0),
+        invalidPropertyData
     ];
     expect(() => {
         sut.push(data);
-    }).toThrow('Supplied data property timestamp to sort on in element 1 is not a number.');
+    }).toThrow(`Supplied data property ${ SORT_ON_PROPERTY } to sort on in element 1 is not a number.`);
 })
 
 test('Unsorted DataWell does not throw an error if the property to be sorted on is not a of type number', () => {
-    let noSortSut = new DataWell(CAPACITY, false, 'timestamp');
+    let noSortSut = new DataWell(CAPACITY, false, 'SORT_ON_PROPERTY');
+    let invalidPropertyData = singleData('1', 1);
     expect(() => {
-        noSortSut.push({sample: 1, timestamp: '1'});
-    }).not.toThrow('Supplied data property timestamp to sort on in element 0 is not a number.');
+        noSortSut.push(invalidPropertyData);
+    }).not.toThrow();
 })
 
 test('Sorted DataWell will merge new data with old data when processing data with same sortOnproperty', () => {
     sut.push(maxData());
-    expect(sut.top()).toEqual({sample: CAPACITY - 1, timestamp: CAPACITY - 1});
-    sut.push({sample: CAPACITY - 1, timestamp: CAPACITY - 1, otherData: CAPACITY - 1});
-    expect(sut.top()).toEqual({sample: CAPACITY - 1, timestamp: CAPACITY - 1, otherData: CAPACITY - 1});
+    const sampleData1 = singleData(CAPACITY - 1);
+    const sampleData2 = {...sampleData1, otherData: CAPACITY - 1};
+    expect(sut.top()).toEqual(sampleData1);
+    sut.push(sampleData2);
+    expect(sut.top()).toEqual(sampleData2);
 })
 
-test('Sorted DataWell will keep newer data on merge with old data when processing data with same sortOnproperty', () => {
+test('Sorted DataWell will keep newer data on merge with old data when processing data with same sortOnProperty', () => {
     sut.push(maxData());
-    expect(sut.top()).toEqual({sample: CAPACITY - 1, timestamp: CAPACITY - 1});
-    sut.push({sample: CAPACITY, timestamp: CAPACITY, data: CAPACITY});
-    expect(sut.top()).toEqual({sample: CAPACITY, timestamp: CAPACITY, data: CAPACITY});
-    sut.push({timestamp: CAPACITY, data: CAPACITY + 1, otherData: CAPACITY + 1});
-    expect(sut.top()).toEqual({sample: CAPACITY, timestamp: CAPACITY, data: CAPACITY + 1, otherData: CAPACITY + 1});
+    expect(sut.top()).toEqual(singleData(CAPACITY - 1));
+    const sampleData1 = {...singleData(CAPACITY), uniqueData: CAPACITY - 1, data: CAPACITY};
+    sut.push(sampleData1);
+    expect(sut.top()).toEqual(sampleData1);
+
+    const sampleData2 = {...singleData(CAPACITY), data: CAPACITY + 1, otherData: CAPACITY + 1};
+    sut.push(sampleData2);
+
+    const expectedData = {...singleData(CAPACITY), uniqueData: CAPACITY - 1, data: CAPACITY + 1, otherData: CAPACITY + 1};
+    expect(sut.top()).toEqual(expectedData);
 })
 
 /*
@@ -270,9 +322,10 @@ test('DataWell.top will return top element and keep it on stack', () => {
 test('Unsorted DataWell.top will return last added element', () => {
     let noSortSut = new DataWell(CAPACITY);
     noSortSut.push(maxData());
-    noSortSut.push({sample: 4.1, timestamp: 4});
+    const lastdata = singleData(4, 4.1);
+    noSortSut.push(lastdata);
     expect(noSortSut.count()).toBe(CAPACITY);
-    expect(noSortSut.top()).toEqual({sample: 4.1, timestamp: 4});
+    expect(noSortSut.top()).toEqual(lastdata);
     noSortSut = null;
 })
 
