@@ -1,6 +1,6 @@
 {
   "name": "@donnerluetjen/datawell",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Creates and maintains a stack of data to refer to.",
   "main": "datawell.js",
   "keywords": [
