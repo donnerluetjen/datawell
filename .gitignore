@@ -6,5 +6,3 @@ coverage/
 node_modules/
 
 use_fifo.js
-
-package-lock.json
