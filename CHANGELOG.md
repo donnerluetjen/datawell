@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added this CHANGELOG
 - Added GitHub action to automate release
 
-## [1.0.2]
+## [v1.0.2]
 
 ### Bugfix:
 
@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added more testing to cover all cases of argument errors at initialization.
 
-## [1.0.1]
+## [v1.0.1]
 
 ### Bugfix:
 
