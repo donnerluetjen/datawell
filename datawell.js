@@ -57,9 +57,8 @@ class DataWell {
 
         if (this.#sorted) {
             this.#data.sort((a, b) => {
-                if (a[this.#sortOnProperty] < b[this.#sortOnProperty]) return -1;
-                if (a[this.#sortOnProperty] > b[this.#sortOnProperty]) return 1;
-                if (a[this.#sortOnProperty] === b[this.#sortOnProperty]) return 0;
+                // there are no duplicates as they would be updated
+                return (a[this.#sortOnProperty] < b[this.#sortOnProperty]) ? -1 : 1;
             });
         }
 
