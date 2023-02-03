@@ -59,11 +59,11 @@ jobs:
           version: ${{ env.NEW_VERSION }}
           operation: release
 
-#      # Publish version to public repository
-#      - name: Publish
-#        run: yarn publish --verbose --access public --tag ${{ env.RELEASE_TAG }}
-#        env:
-#          NPM_AUTH_TOKEN: ${{ secrets.NPM_DATAWELL_ACCESS_TOKEN }}
+      # Publish version to public repository
+      - name: Publish
+        run: yarn publish --verbose --access public --tag ${{ env.RELEASE_TAG }}
+        env:
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_DATAWELL_ACCESS_TOKEN }}
 
       # Commit changes
       - name: Commit CHANGELOG.md and package.json changes and create tag
@@ -79,8 +79,6 @@ jobs:
       - name: Push changes to repository
         run: |
           git push origin && git push --tags
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Read version changelog
       - id: get-changelog
