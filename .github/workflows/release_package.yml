@@ -72,7 +72,7 @@ jobs:
           git config --global user.name "GitHub Actions"
           git add "package.json"
           git add "CHANGELOG.md"
-          git commit -m "chore: release ${{ env.NEW_VERSION }}"
+          git commit -m "GITHUB ACTION: release ${{ env.NEW_VERSION }}"
           git tag ${{ env.NEW_VERSION }}
 
       # Push repository changes
