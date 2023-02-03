@@ -26,11 +26,10 @@ class DataWell {
             if (this.#sorted) {
                 // check if sortOnProperty is present
                 if (!Object.hasOwn(element, this.#sortOnProperty)) {
-                    throw new Error(`Supplied data in element ${ index } does not contain the property ${ this.#sortOnProperty }, which you defined to sort on.`);
+                    throw new Error(`Supplied data in element ${index} does not contain the property ${this.#sortOnProperty}, which you defined to sort on.`);
                 }
-                if (Object.hasOwn(element, this.#sortOnProperty) &&
-                    typeof element[this.#sortOnProperty] !== "number") {
-                    throw new Error(`Supplied data property ${ this.#sortOnProperty } to sort on in element ${ index } is not a number.`);
+                if (Object.hasOwn(element, this.#sortOnProperty) && typeof element[this.#sortOnProperty] !== "number") {
+                    throw new Error(`Supplied data property ${this.#sortOnProperty} to sort on in element ${index} is not a number.`);
                 }
             }
             // push only if id is not already present
@@ -40,8 +39,7 @@ class DataWell {
 
             if (this.#sorted && element_id !== notFound) {
                 // update found element
-                const merged = {...this.#data[element_id], ...element};
-                this.#data[element_id] = merged;
+                this.#data[element_id] = {...this.#data[element_id], ...element};
             } else {
                 this.#data.push(element);
             }

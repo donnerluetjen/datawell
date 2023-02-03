@@ -28,7 +28,7 @@ Creates and maintains a stack of data to refer to.
 
 ### Unsorted DataWell
 
-```
+```javascript
 const dataWell = new DataWell(4);
 
 for (let i=0; i < 4; i++) {
@@ -51,7 +51,7 @@ produces:
 
 ### Sorted DataWell
 
-```
+```javascript
 const dataWell = new DataWell(4, true);
 
 for (let i=0; i < 4; i++) {
@@ -74,7 +74,7 @@ produces:
 
 or, with your own property to sort on:
 
-```
+```javascript
 const dataWell = new DataWell(4, true, "sortOn");
 
 for (let i=0; i < 4; i++) {
