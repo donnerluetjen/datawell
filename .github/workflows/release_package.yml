@@ -1,4 +1,4 @@
-# This workflow was taken from the superfa e website: https://superface.ai/blog/npm-publish-gh-actions-changelog
+# This workflow was taken from the superface website: https://superface.ai/blog/npm-publish-gh-actions-changelog
 
 
 name: Release package
@@ -25,6 +25,8 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      # Checkout repository
+      - uses: actions/checkout@v3
 
       # Configure Git
       - name: Git configuration
